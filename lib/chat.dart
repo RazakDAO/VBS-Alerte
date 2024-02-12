@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Chat extends StatelessWidget {
+  const Chat({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +13,7 @@ class Chat extends StatelessWidget {
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text('Chat'),
+              title: const Text('Chat'),
               background: Image.network(
                 'https://example.com/your_background_image.jpg',
                 fit: BoxFit.cover,
@@ -21,17 +23,17 @@ class Chat extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                ListTile(
+                const ListTile(
                   title: Text('Chat screen', style: TextStyle(fontSize: 40)),
                 ),
-                SizedBox(height: 20),
-                ListTile(
+                const SizedBox(height: 20),
+                const ListTile(
                   title: Text('Item 1'),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text('Item 2'),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text('Item 3'),
                 ),
               ],
@@ -44,7 +46,7 @@ class Chat extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: Chat(),
   ));
 }

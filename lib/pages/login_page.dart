@@ -1,13 +1,16 @@
+ 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vbs_alerte/components/button.dart';
 import 'package:vbs_alerte/components/text_field.dart';
+import 'package:vbs_alerte/models/apiResponseModel.dart';
 import 'package:vbs_alerte/pages/alerte_page.dart';
 import 'package:vbs_alerte/pages/admin-page.dart';
+import 'package:vbs_alerte/services/api_services.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -18,50 +21,57 @@ class _LoginPageState extends State<LoginPage> {
   final passwordTextController = TextEditingController();
   bool isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> loginUser() async {
-    if (!isFormValid()) {
-      showSnackBar('Veuillez remplir tous les champs');
-      return;
-    }
+    if (isFormValid()) {
+      setState(() {
+        isLoading = true;
+      });
+      ApiResponseModel response =
+          await loginAPI(phoneTextController.text, passwordTextController.text);
 
-    setState(() => isLoading = true);
-
-    try {
-      final response = await http.post(
-        Uri.parse('https://sore-gray-cygnet-wear.cyclic.app/api/login'),
-        body: jsonEncode({
-          'phone_number': phoneTextController.text,
-          'password': passwordTextController.text,
-        }),
-        headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjA1MDIzOSwiZXhwIjoxNzMzNTg2MjM5fQ.vlAMLEwlVnkDYZRt5pz9QqaJtWoenAbf76gvrcNBSHk',
-          "Content-Type": "application/json; charset=UTF-8"
-        },
-      );
-
-      final responseData = json.decode(response.body);
-      showSnackBar(responseData["message"]);
-
-      if (responseData["message"] == "L'utilisateur s'est connecté avec succès.") {
-        final role = responseData["data"]["role"];
-        navigateToPage(role);
+      if (response.message == "L'utilisateur s'est connecté avec succès.") {
+        Fluttertoast.showToast(
+            msg: "Connexion reussie",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        navigateToPage(response.data['role']);
+      } else {
+        Fluttertoast.showToast(
+            msg: response.message,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
-    } catch (error) {
-      showSnackBar('Erreur: $error');
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: "Veuillez remplir tous les champs du formulaire.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
   bool isFormValid() {
     return phoneTextController.text.isNotEmpty &&
         passwordTextController.text.isNotEmpty;
-  }
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void navigateToPage(String role) {
@@ -71,16 +81,9 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else if (role == "USER") {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MyAlertScreen()),
+        MaterialPageRoute(builder: (context) => const MyAlertScreen()),
       );
     }
-  }
-
-  @override
-  void dispose() {
-    phoneTextController.dispose();
-    passwordTextController.dispose();
-    super.dispose();
   }
 
   @override
@@ -100,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 200,
                   ),
                   const SizedBox(height: 15),
-                   Text(
+                  Text(
                     'Bienvenue sur Vbs Alerte',
                     style: TextStyle(color: Colors.grey[700]),
                   ),
@@ -117,16 +120,17 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                   ),
                   const SizedBox(height: 15),
-                  MyButton(
-                    onTap: () async {
-                      if (isLoading) {
-                        // Faire quelque chose en cas de chargement en cours
-                      } else {
-                        await loginUser();
-                      }
-                    },
-                    text: isLoading ? 'Connexion...' : 'Connexion',
-                  ),
+                  if (isLoading)
+                    const SpinKitFadingCircle(
+                      color: Color.fromARGB(255, 2, 45, 80),
+                      size: 50.0,
+                    ),
+                  if (!isLoading)
+                    MyButton(
+                        onTap: () async {
+                          await loginUser();
+                        },
+                        text: "Se connecter"),
                   const SizedBox(height: 15),
                 ],
               ),

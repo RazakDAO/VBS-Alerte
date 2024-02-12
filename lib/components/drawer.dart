@@ -8,13 +8,12 @@ class MyDrawer extends StatelessWidget {
 
   // Utilisez 'key' au lieu de 'super.key'
   const MyDrawer(
-      {Key? key, required this.onProfileTap, required this.onSignOut})
-      : super(key: key);
+      {super.key, required this.onProfileTap, required this.onSignOut});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Color.fromARGB(255, 2, 45, 80),
+      backgroundColor: const Color.fromARGB(255, 2, 45, 80),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -65,7 +64,7 @@ class MyDrawer extends StatelessWidget {
                 // Naviguez vers la page de connexion
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               }),
         ],

@@ -6,11 +6,11 @@ class BouttonAlerte extends StatelessWidget {
   final String? alertContent;
 
   const BouttonAlerte({
-    Key? key,
+    super.key,
     required this.onAlertButtonPressed,
     this.alertTitle,
     this.alertContent,
-  }) : super(key: key);
+  });
 
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog(
@@ -32,7 +32,7 @@ class BouttonAlerte extends StatelessWidget {
                 // Fermer la boîte de dialogue
                 Navigator.of(context).pop();
               },
-              child: Text('Fermer'),
+              child: const Text('Fermer'),
             ),
           ],
         );
@@ -49,14 +49,14 @@ class BouttonAlerte extends StatelessWidget {
         onPressed: () {
           _showAlertDialog(context);
         },
-        child: Icon(
-          Icons.notifications,
-          size: 70.0,
-          ),
         backgroundColor: Colors.red,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(70.0),
         ),
+        child: const Icon(
+          Icons.notifications,
+          size: 70.0,
+          ),
       ),
     );
   }

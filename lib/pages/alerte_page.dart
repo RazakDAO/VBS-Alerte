@@ -2,36 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:vbs_alerte/components/drawer.dart';
 import 'package:vbs_alerte/pages/login_page.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon'); // Remplacez 'app_icon' par le nom de votre icône
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  runApp(MyApp());
+void main() {
+ WidgetsFlutterBinding.ensureInitialized();
+ runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+ @override
+ Widget build(BuildContext context) {
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyAlertScreen(),
     );
-  }
+ }
 }
 
 class MyAlertScreen extends StatelessWidget {
-  const MyAlertScreen({Key? key}) : super(key: key);
+ const MyAlertScreen({Key? key}) : super(key: key);
 
-  void goToProfilePage(BuildContext context) {
+ void goToProfilePage(BuildContext context) {
     Navigator.pop(context);
 
     Navigator.push(
@@ -40,10 +30,10 @@ class MyAlertScreen extends StatelessWidget {
         builder: (context) => LoginPage(),
       ),
     );
-  }
+ }
 
-  @override
-  Widget build(BuildContext context) {
+ @override
+ Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -75,19 +65,16 @@ class MyAlertScreen extends StatelessWidget {
         ),
       ),
     );
-  }
+ }
 }
-
 class MyAlertWidget extends StatelessWidget {
-  final String? alertTitle;
-
-  MyAlertWidget({
+ final String? alertTitle;
+ MyAlertWidget({
     Key? key,
     this.alertTitle,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+ }) : super(key: key);
+ @override
+ Widget build(BuildContext context) {
     return Container(
       width: 250.0,
       height: 250.0,
@@ -112,17 +99,17 @@ class MyAlertWidget extends StatelessWidget {
         ),
       ),
     );
-  }
+ }
 }
 
 class MapWebView extends StatelessWidget {
-  final String url;
+ final String url;
 
-  MapWebView({required this.url});
+ MapWebView({required this.url});
 
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+ @override
+ Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _showOptionsDialog(context);
     });
 
@@ -134,9 +121,9 @@ class MapWebView extends StatelessWidget {
         child: Text('Contenu de la carte ou autre contenu ici...'),
       ),
     );
-  }
+ }
 
-  void _showOptionsDialog(BuildContext context) {
+ void _showOptionsDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -147,15 +134,15 @@ class MapWebView extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  _sendMedicalRequest();
-                  Navigator.of(context).pop();
+                 _sendMedicalRequest();
+                 Navigator.of(context).pop();
                 },
                 child: Text('Demande de soins médicaux'),
               ),
               ElevatedButton(
                 onPressed: () {
-                  _sendDangerSignal();
-                  Navigator.of(context).pop();
+                 _sendDangerSignal();
+                 Navigator.of(context).pop();
                 },
                 child: Text('Signal de danger'),
               ),
@@ -164,21 +151,21 @@ class MapWebView extends StatelessWidget {
         );
       },
     );
-  }
+ }
 
-  void _sendMedicalRequest() {
+ void _sendMedicalRequest() {
     // Logique pour envoyer la demande de soins médicaux
     print('Signal de demande de soins médicaux envoyé');
-  }
+ }
 
-  void _sendDangerSignal() {
+ void _sendDangerSignal() {
     // Logique pour envoyer le signal de danger
     print('Signal de danger envoyé');
-  }
+ }
 }
 
 class NavigationUtils {
-  Future<void> handleAlertButtonPressed(BuildContext context) async {
+ Future<void> handleAlertButtonPressed(BuildContext context) async {
     try {
       Position currentLocation = await _getCurrentLocation();
       double latitude = currentLocation.latitude;
@@ -196,10 +183,9 @@ class NavigationUtils {
     } catch (e) {
       print('Erreur lors de l\'obtention/envoi de la localisation : $e');
     }
-  }
-
-  Future<Position> _getCurrentLocation() async {
+ }
+ Future<Position> _getCurrentLocation() async {
     print('Obtention de la localisation actuelle');
     return await Geolocator.getCurrentPosition();
-  }
+ }
 }
